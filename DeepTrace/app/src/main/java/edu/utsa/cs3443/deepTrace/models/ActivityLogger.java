@@ -8,17 +8,20 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 
+import android.content.Context;
+
 public class ActivityLogger {
 
-    public void logScan(List<String> scanData) {
-        writeToTXT(scanData);
-        writeToCSV(scanData);
+    public void logScan(Context context, List<String> scanData) {
+        writeToTXT(context, scanData);
+        writeToCSV(context, scanData);
     }
 
-    public void writeToTXT(List<String> data) {
-        File file = new File(Environment.getExternalStorageDirectory(), "scan_log.txt");
+
+    public void writeToTXT(Context context, List<String> data) {
         try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter(file, true));
+            File logFile = new File(context.getExternalFilesDir(null), "scan_log.txt");
+            FileWriter writer = new FileWriter(logFile);
             for (String line : data) {
                 writer.write(line + "\n");
             }
@@ -28,16 +31,17 @@ public class ActivityLogger {
         }
     }
 
-    public void writeToCSV(List<String> data) {
-        File file = new File(Environment.getExternalStorageDirectory(), "scan_log.csv");
+    public void writeToCSV(Context context, List<String> data) {
         try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter(file, true));
+            File logFile = new File(context.getExternalFilesDir(null), "scan_log.csv");
+            FileWriter writer = new FileWriter(logFile);
             for (String line : data) {
-                writer.write("\"" + line.replace("\"", "") + "\",\n");
+                writer.write("\"" + line + "\"\n");
             }
             writer.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
 }
