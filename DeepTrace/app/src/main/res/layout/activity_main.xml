@@ -64,7 +64,6 @@
                 android:textColor="@android:color/white"
                 android:backgroundTint="@color/purple_500" />
 
-
             <Button
                 android:id="@+id/settingsBtn"
                 android:layout_width="match_parent"

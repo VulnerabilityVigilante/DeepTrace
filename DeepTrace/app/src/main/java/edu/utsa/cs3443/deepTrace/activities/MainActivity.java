@@ -23,6 +23,8 @@ import java.util.List;
 import edu.utsa.cs3443.deepTrace.R;
 import edu.utsa.cs3443.deepTrace.models.ActivityLogger;
 import edu.utsa.cs3443.deepTrace.models.FileScanner;
+import edu.utsa.cs3443.deepTrace.models.CsvPathScanner;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -58,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
      * 2. Creating (if needed) a "tmp" subdirectory.
      * 3. Creating the demo file ("crackme_demo.exe") inside the tmp folder.
      */
+
     private void setupDemoFile() {
         appFilesDir = getExternalFilesDir(null);
         if (appFilesDir == null) {
@@ -100,15 +103,19 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "tmp directory not available", Toast.LENGTH_SHORT).show();
             return;
         }
-        // Attempt to pull suspicious files from the Downloads folder into tmpDir.
-        pullSuspiciousFilesFromExternalDirs(tmpDir);
-        List<File> suspiciousFiles = scanner.scanFolder(tmpDir);
+
+        File csvFile = new File(tmpDir, "tmp.csv");
+        logSuspiciousFilesToCSV(csvFile);
+
+        List<File> suspiciousFiles = CsvPathScanner.scanFromCSV(csvFile, scanner);
         logger.logScan(this, scanner.getFormattedFindings());
+
         Intent intent = new Intent(this, ResultActivity.class);
         intent.putExtra("hasThreats", !suspiciousFiles.isEmpty());
-        intent.putExtra("demoFolderPath", tmpDir.getAbsolutePath());
+        intent.putExtra("csvPath", csvFile.getAbsolutePath());
         startActivity(intent);
     }
+
 
     /**
      * Attempts to copy suspicious files from external non-root system directories
@@ -117,48 +124,53 @@ public class MainActivity extends AppCompatActivity {
      * If the external directory is not accessible or no suspicious files are found,
      * a toast message is shown.
      */
-    private void pullSuspiciousFilesFromExternalDirs(File destDir) {
-        // First, check the permission explicitly.
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(this, "Access to external directories denied due to permissions", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        File downloads = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-        if (downloads == null || !downloads.exists() || !downloads.isDirectory()) {
-            Toast.makeText(this, "External directory is not accessible", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // Try to list files, catching any potential SecurityException.
-        File[] files;
-        try {
-            files = downloads.listFiles();
-        } catch (SecurityException se) {
-            Toast.makeText(this, "Access to external directories denied due to permissions", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        if (files == null) {
-            Toast.makeText(this, "Unable to read external directory", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
+    private void logSuspiciousFilesToCSV(File csvFile) {
         boolean foundAny = false;
-        for (File file : files) {
-            if (scanner.isSuspicious(file)) {
-                File destFile = new File(destDir, file.getName());
-                copyFile(file, destFile);
-                // Record the original location so that later deletion targets the source file.
-                MainActivity.importedFileOriginalPaths.put(destFile.getAbsolutePath(), file.getAbsolutePath());
-                foundAny = true;
+
+        try (FileOutputStream fos = new FileOutputStream(csvFile, false)) {
+
+            // ✅ Try Downloads folder, but don't depend on it
+            File downloads = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+            if (downloads != null && downloads.exists() && downloads.isDirectory()) {
+                File[] downloadFiles = downloads.listFiles();
+                if (downloadFiles != null) {
+                    for (File file : downloadFiles) {
+                        if (scanner.isSuspicious(file)) {
+                            fos.write((file.getAbsolutePath() + "\n").getBytes());
+                            foundAny = true;
+                        }
+                    }
+                }
+            } else {
+                // Just inform, don't block
+                Toast.makeText(this, "Downloads folder unavailable, skipping it", Toast.LENGTH_SHORT).show();
             }
-        }
-        if (!foundAny) {
-            Toast.makeText(this, "No suspicious files found in external directories", Toast.LENGTH_SHORT).show();
+
+            // ✅ Always scan tmp folder (demo file lives here)
+            if (tmpDir != null && tmpDir.exists()) {
+                File[] tmpFiles = tmpDir.listFiles();
+                if (tmpFiles != null) {
+                    for (File file : tmpFiles) {
+                        if (scanner.isSuspicious(file)) {
+                            fos.write((file.getAbsolutePath() + "\n").getBytes());
+                            foundAny = true;
+                        }
+                    }
+                }
+            }
+
+            if (!foundAny) {
+                Toast.makeText(this, "No suspicious files found in scanned directories", Toast.LENGTH_SHORT).show();
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Failed to write to CSV file", Toast.LENGTH_SHORT).show();
         }
     }
+
+
+
 
 
     /**

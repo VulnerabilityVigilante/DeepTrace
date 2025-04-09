@@ -16,6 +16,7 @@ import java.util.List;
 
 import edu.utsa.cs3443.deepTrace.R;
 import edu.utsa.cs3443.deepTrace.adapters.SuspiciousFileAdapter;
+import edu.utsa.cs3443.deepTrace.models.CsvPathScanner;
 import edu.utsa.cs3443.deepTrace.models.FileScanner;
 import edu.utsa.cs3443.deepTrace.models.FileRemover;
 
@@ -39,18 +40,20 @@ public class ResultActivity extends AppCompatActivity {
         deleteButton = findViewById(R.id.deleteBtn);
         suspiciousListView = findViewById(R.id.suspiciousList);
         remover = new FileRemover();
+        remover = new FileRemover();
         scanner = new FileScanner();
 
         // Retrieve the folder path from the Intent extras
-        String folderPath = getIntent().getStringExtra("demoFolderPath");
-        if (folderPath == null) {
-            Toast.makeText(this, "No folder path provided", Toast.LENGTH_SHORT).show();
+        String csvPath = getIntent().getStringExtra("csvPath");
+        if (csvPath == null) {
+            Toast.makeText(this, "No CSV path provided", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        File tmpDir = new File(folderPath);
-        Log.d("ResultActivity", "Scanning folder: " + tmpDir.getAbsolutePath());
-        detectedFiles = scanner.scanFolder(tmpDir);
+        File csvFile = new File(csvPath);
+        Log.d("ResultActivity", "Reading from CSV: " + csvFile.getAbsolutePath());
+        detectedFiles = CsvPathScanner.scanFromCSV(csvFile, scanner);
+
 
         // Log the found files for debugging
         for (File f : detectedFiles) {
@@ -100,13 +103,15 @@ public class ResultActivity extends AppCompatActivity {
                 Toast.makeText(this, "Failed to delete some files", Toast.LENGTH_SHORT).show();
             }
             // Refresh the list after deletion.
-            String folderPath = getIntent().getStringExtra("demoFolderPath");
-            if (folderPath != null) {
-                File tmpDir = new File(folderPath);
-                detectedFiles = scanner.scanFolder(tmpDir);
-                adapter = new SuspiciousFileAdapter(this, detectedFiles);
-                suspiciousListView.setAdapter(adapter);
+            String csvPath = getIntent().getStringExtra("csvPath");
+            if (csvPath == null) {
+                Toast.makeText(this, "No CSV path provided", Toast.LENGTH_SHORT).show();
+                return;
             }
+
+            File csvFile = new File(csvPath);
+            detectedFiles = CsvPathScanner.scanFromCSV(csvFile, scanner);
+
         }
     }
 
