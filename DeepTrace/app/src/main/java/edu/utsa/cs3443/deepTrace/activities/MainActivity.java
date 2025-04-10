@@ -8,6 +8,9 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
 import android.widget.Toast;
+import android.content.Context;
+
+
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -19,11 +22,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.io.InputStream;
 
 import edu.utsa.cs3443.deepTrace.R;
 import edu.utsa.cs3443.deepTrace.models.ActivityLogger;
 import edu.utsa.cs3443.deepTrace.models.FileScanner;
 import edu.utsa.cs3443.deepTrace.models.CsvPathScanner;
+import edu.utsa.cs3443.deepTrace.models.VirusDatabase;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -107,11 +112,22 @@ public class MainActivity extends AppCompatActivity {
         File csvFile = new File(tmpDir, "tmp.csv");
         logSuspiciousFilesToCSV(csvFile);
 
-        List<File> suspiciousFiles = CsvPathScanner.scanFromCSV(csvFile, scanner);
+        File virusDbFile = copyVirusDBFromAssets(this);
+
+        if (virusDbFile == null || !virusDbFile.exists()) {
+            Toast.makeText(this, "Failed to load virus definitions", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // ✅ Confirm file was successfully written before scanning
+        VirusDatabase db = new VirusDatabase(virusDbFile);
+        List<File> suspicious = CsvPathScanner.scanFromCSV(csvFile, db);
+
+
         logger.logScan(this, scanner.getFormattedFindings());
 
         Intent intent = new Intent(this, ResultActivity.class);
-        intent.putExtra("hasThreats", !suspiciousFiles.isEmpty());
+        intent.putExtra("hasThreats", !suspicious.isEmpty());
         intent.putExtra("csvPath", csvFile.getAbsolutePath());
         startActivity(intent);
     }
@@ -170,6 +186,29 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    private File copyVirusDBFromAssets(Context context) {
+        File outFile = new File(context.getFilesDir(), "virus_db.csv");
+
+        if (outFile.exists()) {
+            outFile.delete(); // Always refresh
+        }
+
+        try (InputStream is = context.getAssets().open("virus_db.csv");
+             FileOutputStream fos = new FileOutputStream(outFile)) {
+
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = is.read(buffer)) > 0) {
+                fos.write(buffer, 0, length);
+            }
+            System.out.println("✅ Copied virus_db.csv to: " + outFile.getAbsolutePath());
+            return outFile;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
 
 

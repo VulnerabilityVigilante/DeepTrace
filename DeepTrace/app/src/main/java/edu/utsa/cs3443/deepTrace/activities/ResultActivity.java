@@ -1,6 +1,6 @@
 package edu.utsa.cs3443.deepTrace.activities;
 
-import android.content.Intent;
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -12,13 +12,15 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.List;
 
 import edu.utsa.cs3443.deepTrace.R;
 import edu.utsa.cs3443.deepTrace.adapters.SuspiciousFileAdapter;
 import edu.utsa.cs3443.deepTrace.models.CsvPathScanner;
-import edu.utsa.cs3443.deepTrace.models.FileScanner;
 import edu.utsa.cs3443.deepTrace.models.FileRemover;
+import edu.utsa.cs3443.deepTrace.models.VirusDatabase;
 
 public class ResultActivity extends AppCompatActivity {
 
@@ -29,7 +31,7 @@ public class ResultActivity extends AppCompatActivity {
 
     List<File> detectedFiles;
     FileRemover remover;
-    FileScanner scanner;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +43,6 @@ public class ResultActivity extends AppCompatActivity {
         suspiciousListView = findViewById(R.id.suspiciousList);
         remover = new FileRemover();
         remover = new FileRemover();
-        scanner = new FileScanner();
 
         // Retrieve the folder path from the Intent extras
         String csvPath = getIntent().getStringExtra("csvPath");
@@ -52,7 +53,13 @@ public class ResultActivity extends AppCompatActivity {
 
         File csvFile = new File(csvPath);
         Log.d("ResultActivity", "Reading from CSV: " + csvFile.getAbsolutePath());
-        detectedFiles = CsvPathScanner.scanFromCSV(csvFile, scanner);
+        File virusDbFile = copyVirusDBFromAssets(this);
+        VirusDatabase db = new VirusDatabase(virusDbFile);
+
+        detectedFiles = CsvPathScanner.scanFromCSV(csvFile, db);
+
+
+
 
 
         // Log the found files for debugging
@@ -110,7 +117,12 @@ public class ResultActivity extends AppCompatActivity {
             }
 
             File csvFile = new File(csvPath);
-            detectedFiles = CsvPathScanner.scanFromCSV(csvFile, scanner);
+            File virusDbFile = copyVirusDBFromAssets(this);
+            VirusDatabase db = new VirusDatabase(virusDbFile);
+
+            detectedFiles = CsvPathScanner.scanFromCSV(csvFile, db);
+            adapter = new SuspiciousFileAdapter(this, detectedFiles);
+            suspiciousListView.setAdapter(adapter);
 
         }
     }
@@ -119,4 +131,32 @@ public class ResultActivity extends AppCompatActivity {
     public void onBackClick(View view) {
         finish();
     }
+
+    private File copyVirusDBFromAssets(Context context) {
+        File outFile = new File(context.getFilesDir(), "virus_db.csv");
+
+        if (outFile.exists()) {
+            outFile.delete(); // 👈 force recopy every time
+        }
+
+        try (InputStream is = context.getAssets().open("virus_db.csv");
+             FileOutputStream fos = new FileOutputStream(outFile)) {
+
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = is.read(buffer)) > 0) {
+                fos.write(buffer, 0, length);
+            }
+            System.out.println("✅ Copied updated virus_db.csv to: " + outFile.getAbsolutePath());
+            return outFile;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
+
+
 }
