@@ -1,22 +1,119 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="24dp"
-    android:gravity="center">
+    android:id="@+id/settingsPageRoot">
 
-    <CheckBox
-        android:id="@+id/cbDeepScan"
+    <ImageButton
+        android:id="@+id/backButton"
+        android:onClick="onBackClick"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_gravity="start|top"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="20dp"
+        android:src="@drawable/blackarrow"
+        android:scaleType="fitCenter"
+        android:scaleX="-1"
+        android:background="@android:color/transparent"
+        android:contentDescription="Back" />
+
+    <!-- Centered Settings title -->
+    <TextView
+        android:id="@+id/SettingsName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Enable Deep Scan"
-        android:onClick="onCheckboxClicked" />
+        android:text="Settings"
+        android:textSize="40sp"
+        android:textColor="@android:color/black"
+        android:layout_gravity="top|center_horizontal"
+        android:layout_marginTop="20dp" />
 
-    <Button
-        android:text="Back"
-        android:onClick="onBackClick"
-        android:layout_marginTop="32dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-</LinearLayout>
+    <!-- Checkboxes below the back button -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="24dp"
+        android:layout_marginTop="100dp"
+        android:gravity="start">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp"
+            android:gravity="start">
+
+            <CheckBox
+                android:id="@+id/cbFont"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:scaleX="1.5"
+                android:scaleY="1.5"
+                android:onClick="onCheckboxClicked" />
+
+            <TextView
+                android:id="@+id/cbFontText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Change Font Size"
+                android:textColor="@color/black"
+                android:layout_marginStart="8dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp"
+            android:gravity="center_vertical">
+
+            <CheckBox
+                android:id="@+id/cbDarkMode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:scaleX="1.5"
+                android:scaleY="1.5"
+                android:onClick="onCheckboxClickedSec" />
+
+            <TextView
+                android:id="@+id/cbDarkModeText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Enable Dark Mode"
+                android:textColor="@color/black"
+                android:layout_marginStart="8dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp"
+            android:gravity="center_vertical">
+
+            <CheckBox
+                android:id="@+id/cbNotification"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:scaleX="1.5"
+                android:scaleY="1.5"
+                android:onClick="onCheckboxClickedThi" />
+
+            <TextView
+                android:id="@+id/cbNotificationText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Last Time Scanned"
+                android:textColor="@color/black"
+                android:layout_marginStart="8dp" />
+        </LinearLayout>
+    </LinearLayout>
+
+</FrameLayout>
+

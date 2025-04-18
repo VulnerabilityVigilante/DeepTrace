@@ -48,6 +48,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //jians addition
+        edu.utsa.cs3443.deepTrace.models.Settings.init(getApplicationContext());
 
         scanner = new FileScanner();
         logger = new ActivityLogger();
