@@ -1,6 +1,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/outerLayout"
     android:orientation="vertical"
-    android:gravity="center"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="24dp">
@@ -9,14 +9,22 @@
         android:id="@+id/resultText"
         android:text="Results will appear here"
         android:textSize="20sp"
+        android:layout_gravity="center_horizontal"
         android:layout_marginBottom="20dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="120dp">
+
     <ListView
         android:id="@+id/suspiciousList"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_height="300dp"
         android:dividerHeight="8dp" />
 
     <Button
@@ -36,4 +44,5 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp" />
 
+    </LinearLayout>
 </LinearLayout>

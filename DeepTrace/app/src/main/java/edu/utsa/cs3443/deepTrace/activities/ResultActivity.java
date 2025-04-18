@@ -1,10 +1,14 @@
 package edu.utsa.cs3443.deepTrace.activities;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,6 +43,24 @@ public class ResultActivity extends AppCompatActivity {
         setContentView(R.layout.activity_result);
 
         resultText = findViewById(R.id.resultText);
+        // Get the outer layout where resultText is located
+        LinearLayout outerLayout = findViewById(R.id.outerLayout);
+
+// Create and configure the ImageView
+        ImageView statusImage = new ImageView(this);
+
+
+// Set layout parameters (center horizontally, add top margin)
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        params.gravity = Gravity.CENTER_HORIZONTAL;
+        params.topMargin = 24; // adds spacing under the TextView
+        statusImage.setLayoutParams(params);
+
+// Add the ImageView right after resultText (index 1)
+        outerLayout.addView(statusImage, 1);
         deleteButton = findViewById(R.id.deleteBtn);
         suspiciousListView = findViewById(R.id.suspiciousList);
         remover = new FileRemover();
@@ -71,12 +93,16 @@ public class ResultActivity extends AppCompatActivity {
         if (hasThreats && !detectedFiles.isEmpty()) {
             resultText.setText("⚠️ Suspicious Files Detected");
             deleteButton.setVisibility(View.VISIBLE);
+            statusImage.setImageResource(R.drawable.hazardlogo); // Replace with your image in res/drawable
             // Set up the ListView with the custom adapter to show toggles
             adapter = new SuspiciousFileAdapter(this, detectedFiles);
+            outerLayout.setBackgroundColor(Color.parseColor("#FFFF99"));
             suspiciousListView.setAdapter(adapter);
         } else {
             resultText.setText("✅ No Virus Was Found!");
             deleteButton.setVisibility(View.GONE);
+            outerLayout.setBackgroundColor(getResources().getColor(android.R.color.holo_blue_light));
+            statusImage.setImageResource(R.drawable.thumbsup); // Replace with your image in res/drawable
         }
     }
 
