@@ -46,28 +46,18 @@ public class LastLogger {
         return time;
 
     }
-    public void loadLastTime(MainActivity activity) throws IOException {
-
-        AssetManager manager = activity.getAssets();
-        Scanner scan = null;
-        String folder = "lastTime.csv";
-
-        try {
-            InputStream file = manager.open(folder);
-
-            scan = new Scanner(file);
-            scan.nextLine();
-
-            String line = scan.nextLine().trim();
-
-
+    public void loadLastTime(Context ctx) throws IOException {
+        // openFileInput targets /data/data/your.package/files/lastTime.csv
+        try (Scanner scan = new Scanner(ctx.openFileInput("lastTime.csv"))) {
+            // skip the header line
+            if (scan.hasNextLine()) scan.nextLine();
+            // read the actual timestamp
+            if (scan.hasNextLine()) {
+                this.time = scan.nextLine().trim();
+            }
         } catch (IOException e) {
-
-            throw new IOException("ERROR: File cannot be opened or does not exist " + folder, e);
-
+            throw new IOException("ERROR: Cannot open lastTime.csv in internal storage", e);
         }
-
-
     }
 
     public void saveData(Context ctx) {

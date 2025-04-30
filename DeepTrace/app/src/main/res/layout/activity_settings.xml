@@ -84,7 +84,7 @@
                 android:id="@+id/cbDarkModeText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Enable Dark Mode"
+                android:text="Enable Dim Light Mode"
                 android:textColor="@color/black"
                 android:layout_marginStart="8dp" />
         </LinearLayout>
