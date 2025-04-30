@@ -1,86 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mainLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background"
     tools:context=".activities.MainActivity">
 
-    <!-- App Logo -->
+    <!-- Matrix Background GIF -->
     <ImageView
-        android:id="@+id/appLogo"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:src="@drawable/applogo"
-        android:contentDescription="App Logo"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="48dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:scaleType="centerInside" />
-    <TextView
-        android:id="@+id/homeTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="DeepTrace Scanner"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:layout_marginVertical="20dp"
-        android:textColor="@android:color/black"
-        app:layout_constraintTop_toBottomOf="@id/appLogo"
-        android:layout_marginTop="16dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:id="@+id/gifBackground"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:contentDescription="Matrix Background" />
 
+    <!-- Optional overlay for readability -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#AA000000" />
 
-    <!-- Main Action Card -->
-    <androidx.cardview.widget.CardView
-        android:id="@+id/actionCard"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="88dp"
+    <!-- Foreground UI Layer -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp">
 
-        app:cardCornerRadius="16dp"
-        app:cardElevation="6dp"
-        app:cardBackgroundColor="@color/white"
-        app:layout_constraintTop_toBottomOf="@id/appLogo"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        <!-- App Logo -->
+        <ImageView
+            android:id="@+id/appLogo"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:src="@drawable/applogo"
+            android:contentDescription="App Logo"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="48dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:scaleType="centerInside" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <!-- App Title -->
+        <TextView
+            android:id="@+id/homeTitle"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="24dp"
-            android:orientation="vertical"
-            android:gravity="center">
+            android:text="DeepTrace Scanner"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
+            android:layout_marginTop="16dp"
+            app:layout_constraintTop_toBottomOf="@id/appLogo"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
-            <Button
-                android:id="@+id/scanBtn"
+        <!-- Action Card -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/actionCard"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="88dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="6dp"
+            app:cardBackgroundColor="@color/white"
+            app:layout_constraintTop_toBottomOf="@id/appLogo"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:onClick="onScanClick"
-                android:text="🚀 Start Scan"
-                android:padding="11dp"
-                android:textColor="@android:color/white"
-                android:backgroundTint="@color/purple_500"
-                android:gravity="start|center_vertical"
-                android:paddingStart="4dp"/>
+                android:padding="24dp"
+                android:orientation="vertical"
+                android:gravity="center">
 
-            <Button
-                android:id="@+id/settingsBtn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:onClick="onSettingsClick"
-                android:text="⚙️ Settings"
-                android:textColor="@color/purple_500"
-                android:backgroundTint="@android:color/transparent"
-                android:background="@drawable/button_outline"
-                android:gravity="start|center_vertical"
-                android:paddingStart="4dp"/>
+                <Button
+                    android:id="@+id/scanBtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:onClick="onScanClick"
+                    android:text="🚀 Start Scan"
+                    android:padding="11dp"
+                    android:textColor="@android:color/white"
+                    android:backgroundTint="@color/purple_500"
+                    android:gravity="start|center_vertical"
+                    android:paddingStart="4dp"/>
 
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
-</androidx.constraintlayout.widget.ConstraintLayout>
+                <Button
+                    android:id="@+id/settingsBtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:onClick="onSettingsClick"
+                    android:text="⚙️ Settings"
+                    android:textColor="@color/purple_500"
+                    android:backgroundTint="@android:color/transparent"
+                    android:background="@drawable/button_outline"
+                    android:gravity="start|center_vertical"
+                    android:paddingStart="4dp"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>
