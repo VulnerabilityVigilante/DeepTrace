@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background"
-    tools:context=".MainActivity">
+    tools:context=".activities.MainActivity">
 
     <!-- App Logo -->
     <ImageView
@@ -27,6 +27,7 @@
         android:text="DeepTrace Scanner"
         android:textSize="20sp"
         android:textStyle="bold"
+        android:layout_marginVertical="20dp"
         android:textColor="@android:color/black"
         app:layout_constraintTop_toBottomOf="@id/appLogo"
         android:layout_marginTop="16dp"
@@ -39,7 +40,7 @@
         android:id="@+id/actionCard"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="88dp"
 
         app:cardCornerRadius="16dp"
         app:cardElevation="6dp"
@@ -61,8 +62,11 @@
                 android:layout_height="wrap_content"
                 android:onClick="onScanClick"
                 android:text="🚀 Start Scan"
+                android:padding="11dp"
                 android:textColor="@android:color/white"
-                android:backgroundTint="@color/purple_500" />
+                android:backgroundTint="@color/purple_500"
+                android:gravity="start|center_vertical"
+                android:paddingStart="4dp"/>
 
             <Button
                 android:id="@+id/settingsBtn"
@@ -73,7 +77,9 @@
                 android:text="⚙️ Settings"
                 android:textColor="@color/purple_500"
                 android:backgroundTint="@android:color/transparent"
-                android:background="@drawable/button_outline" />
+                android:background="@drawable/button_outline"
+                android:gravity="start|center_vertical"
+                android:paddingStart="4dp"/>
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>

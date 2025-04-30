@@ -89,30 +89,14 @@
                 android:layout_marginStart="8dp" />
         </LinearLayout>
 
-        <LinearLayout
+        <Button
+            android:id="@+id/btnLastScan"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="8dp"
-            android:gravity="center_vertical">
-
-            <CheckBox
-                android:id="@+id/cbNotification"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=""
-                android:scaleX="1.5"
-                android:scaleY="1.5"
-                android:onClick="onCheckboxClickedThi" />
-
-            <TextView
-                android:id="@+id/cbNotificationText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Last Time Scanned"
-                android:textColor="@color/black"
-                android:layout_marginStart="8dp" />
-        </LinearLayout>
+            android:layout_marginTop="10dp"
+            android:text="Last Time Scanned"
+            android:textAllCaps="false"
+            android:onClick="onLastScanClick"/>
     </LinearLayout>
 
 </FrameLayout>

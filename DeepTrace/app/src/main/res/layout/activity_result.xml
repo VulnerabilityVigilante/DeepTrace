@@ -14,12 +14,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
+    <ImageView
+        android:id="@+id/statusImage"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:layout_gravity="center_horizontal"
+        android:scaleType="centerCrop"
+        android:src="@drawable/hazardlogo" />
+
+
     <LinearLayout
         android:orientation="vertical"
         android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="120dp">
+        android:layout_marginTop="30dp">
 
     <ListView
         android:id="@+id/suspiciousList"
@@ -37,12 +46,14 @@
         android:backgroundTint="@android:color/holo_red_dark"
         android:textColor="#fff" />
 
+
+
+    </LinearLayout>
+
     <Button
         android:text="Back"
         android:onClick="onBackClick"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp" />
-
-    </LinearLayout>
+        android:layout_gravity="center_horizontal"/>
 </LinearLayout>

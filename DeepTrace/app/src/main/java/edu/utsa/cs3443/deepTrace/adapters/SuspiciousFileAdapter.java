@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 import edu.utsa.cs3443.deepTrace.R;
+import edu.utsa.cs3443.deepTrace.models.Settings;
 
 public class SuspiciousFileAdapter extends BaseAdapter {
     private Context context;
@@ -77,6 +78,7 @@ public class SuspiciousFileAdapter extends BaseAdapter {
 
         File file = files.get(position);
         holder.fileNameText.setText(file.getName());
+        holder.fileNameText.setTextSize(Settings.getFontSize());
 
         // If this file was imported from an external directory, display its original location.
         if (MainActivity.importedFileOriginalPaths.containsKey(file.getAbsolutePath())) {
@@ -86,6 +88,7 @@ public class SuspiciousFileAdapter extends BaseAdapter {
             // Otherwise, use the file's own absolute path
             holder.sourceText.setText("Source: " + file.getAbsolutePath());
         }
+        holder.sourceText.setTextSize(Settings.getFontSize());
 
 
         holder.checkBox.setOnCheckedChangeListener(null);
@@ -99,6 +102,8 @@ public class SuspiciousFileAdapter extends BaseAdapter {
         return convertView;
     }
 
+
+
     static class ViewHolder {
         TextView fileNameText;
         CheckBox checkBox;
@@ -106,3 +111,5 @@ public class SuspiciousFileAdapter extends BaseAdapter {
     }
 
 }
+
+

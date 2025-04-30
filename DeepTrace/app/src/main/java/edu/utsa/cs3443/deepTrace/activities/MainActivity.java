@@ -7,6 +7,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.content.Context;
 
@@ -20,20 +22,25 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.io.InputStream;
+import java.util.Locale;
 
 import edu.utsa.cs3443.deepTrace.R;
 import edu.utsa.cs3443.deepTrace.models.ActivityLogger;
 import edu.utsa.cs3443.deepTrace.models.FileScanner;
 import edu.utsa.cs3443.deepTrace.models.CsvPathScanner;
+import edu.utsa.cs3443.deepTrace.models.LastLogger;
 import edu.utsa.cs3443.deepTrace.models.VirusDatabase;
-
+import edu.utsa.cs3443.deepTrace.models.Settings;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final int PERMISSION_REQUEST_CODE = 100;
+    public static LastLogger lastLogger;
     FileScanner scanner;
     ActivityLogger logger;
     // Use the app's external files directory as our base folder.
@@ -49,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         //jians addition
-        edu.utsa.cs3443.deepTrace.models.Settings.init(getApplicationContext());
+        Settings.init(getApplicationContext());
 
         scanner = new FileScanner();
         logger = new ActivityLogger();
@@ -59,6 +66,62 @@ public class MainActivity extends AppCompatActivity {
         } else {
             setupDemoFile();
         }
+
+        lastLogger = new LastLogger("no scans have been done");
+        LastLogger.ensureLastLogFile(this);
+        try {
+            lastLogger.loadLastTime(this);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        float fontSizeSp = Settings.getFontSize();
+
+        // ② find each View you want to resize…
+        TextView homeTitle   = findViewById(R.id.homeTitle);
+        Button scanBtn     = findViewById(R.id.scanBtn);
+        Button   settingsBtn = findViewById(R.id.settingsBtn);
+
+        // ③ and apply it (in SP)
+        homeTitle .setTextSize(fontSizeSp);
+        scanBtn   .setTextSize(fontSizeSp);
+        settingsBtn.setTextSize(fontSizeSp);
+        applyFontSizes(Settings.getFontSize());
+
+        applyDarkModeBackground();
+
+    }
+
+    protected void onResume() {
+        super.onResume();
+        // Re-apply in case the user changed it in Settings:
+        applyFontSizes(Settings.getFontSize());
+        applyDarkModeBackground();
+    }
+
+    private void applyDarkModeBackground() {
+        // Change `ConstraintLayout` to whatever your root is:
+        View root = findViewById(R.id.mainLayout);
+        if (Settings.getSetting("dark mode")) {
+            root.setBackgroundColor(
+                    getResources().getColor(android.R.color.darker_gray)
+            );
+        } else {
+            // restore your original background color
+            root.setBackgroundColor(
+                    getResources().getColor(R.color.background)
+            );
+        }
+    }
+
+    private void applyFontSizes(float sp) {
+        TextView homeTitle   = findViewById(R.id.homeTitle);
+        Button   scanBtn     = findViewById(R.id.scanBtn);
+        Button   settingsBtn = findViewById(R.id.settingsBtn);
+
+        homeTitle.  setTextSize(sp);
+        scanBtn.    setTextSize(sp);
+        settingsBtn.setTextSize(sp);
     }
 
     /**
@@ -125,6 +188,13 @@ public class MainActivity extends AppCompatActivity {
         VirusDatabase db = new VirusDatabase(virusDbFile);
         List<File> suspicious = CsvPathScanner.scanFromCSV(csvFile, db);
 
+        lastLogger.saveData(this);
+
+        Toast.makeText(
+                this,
+                "Scan started at: " + lastLogger.getTime(),
+                Toast.LENGTH_SHORT
+        ).show();
 
         logger.logScan(this, scanner.getFormattedFindings());
 
@@ -251,6 +321,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == PERMISSION_REQUEST_CODE) {
             if (grantResults.length > 0 &&
                     grantResults[0] == PackageManager.PERMISSION_GRANTED) {

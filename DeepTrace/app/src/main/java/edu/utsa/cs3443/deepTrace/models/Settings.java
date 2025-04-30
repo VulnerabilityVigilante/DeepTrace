@@ -35,7 +35,7 @@ public class Settings {
         if (prefs == null) {
             throw new IllegalStateException("Settings not initialized. Call Settings.init(context) first.");
         }
-        return prefs.getFloat("fontSize", 25f); // Default font size is 25f
+        return prefs.getFloat("fontSize", 20f);
     }
 
     public static void setFontSize(float size) {

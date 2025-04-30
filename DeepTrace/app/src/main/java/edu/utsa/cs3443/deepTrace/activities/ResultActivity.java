@@ -25,6 +25,7 @@ import edu.utsa.cs3443.deepTrace.adapters.SuspiciousFileAdapter;
 import edu.utsa.cs3443.deepTrace.models.CsvPathScanner;
 import edu.utsa.cs3443.deepTrace.models.FileRemover;
 import edu.utsa.cs3443.deepTrace.models.VirusDatabase;
+import edu.utsa.cs3443.deepTrace.models.Settings;
 
 public class ResultActivity extends AppCompatActivity {
 
@@ -37,30 +38,21 @@ public class ResultActivity extends AppCompatActivity {
     FileRemover remover;
 
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result);
+        Settings.init(getApplicationContext());
 
         resultText = findViewById(R.id.resultText);
+        resultText.setTextSize(Settings.getFontSize());
         // Get the outer layout where resultText is located
         LinearLayout outerLayout = findViewById(R.id.outerLayout);
 
-// Create and configure the ImageView
-        ImageView statusImage = new ImageView(this);
+        ImageView statusImage = findViewById(R.id.statusImage);
 
-
-// Set layout parameters (center horizontally, add top margin)
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        );
-        params.gravity = Gravity.CENTER_HORIZONTAL;
-        params.topMargin = 24; // adds spacing under the TextView
-        statusImage.setLayoutParams(params);
-
-// Add the ImageView right after resultText (index 1)
-        outerLayout.addView(statusImage, 1);
         deleteButton = findViewById(R.id.deleteBtn);
         suspiciousListView = findViewById(R.id.suspiciousList);
         remover = new FileRemover();
@@ -92,6 +84,7 @@ public class ResultActivity extends AppCompatActivity {
         boolean hasThreats = getIntent().getBooleanExtra("hasThreats", false);
         if (hasThreats && !detectedFiles.isEmpty()) {
             resultText.setText("⚠️ Suspicious Files Detected");
+            statusImage.setImageResource(R.drawable.hazardlogo);
             deleteButton.setVisibility(View.VISIBLE);
             statusImage.setImageResource(R.drawable.hazardlogo); // Replace with your image in res/drawable
             // Set up the ListView with the custom adapter to show toggles
@@ -100,9 +93,39 @@ public class ResultActivity extends AppCompatActivity {
             suspiciousListView.setAdapter(adapter);
         } else {
             resultText.setText("✅ No Virus Was Found!");
+            statusImage.setImageResource(R.drawable.thumbsup);
             deleteButton.setVisibility(View.GONE);
             outerLayout.setBackgroundColor(getResources().getColor(android.R.color.holo_blue_light));
-            statusImage.setImageResource(R.drawable.thumbsup); // Replace with your image in res/drawable
+            statusImage.setImageResource(R.drawable.thumbsup);
+        }
+
+        applyAppropriateBackground(outerLayout, hasThreats);
+    }
+
+    protected void onResume() {
+        super.onResume();
+        // make sure the text size updates if they changed it in Settings
+        resultText.setTextSize(Settings.getFontSize());
+        if (adapter != null) {
+            adapter.notifyDataSetChanged();
+        }
+        LinearLayout outerLayout = findViewById(R.id.outerLayout);
+        boolean hasThreats = getIntent().getBooleanExtra("hasThreats", false);
+        applyAppropriateBackground(outerLayout, hasThreats);
+
+    }
+
+    private void applyAppropriateBackground(View root, boolean hasThreats) {
+        if (Settings.getSetting("dark mode")) {
+            root.setBackgroundColor(
+                    getResources().getColor(android.R.color.darker_gray)
+            );
+        } else if (hasThreats) {
+            root.setBackgroundColor(Color.parseColor("#FFFF99"));
+        } else {
+            root.setBackgroundColor(
+                    getResources().getColor(android.R.color.holo_blue_light)
+            );
         }
     }
 
