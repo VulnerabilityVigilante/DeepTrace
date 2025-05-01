@@ -33,6 +33,7 @@
         <!-- ✅ ADD THESE TWO MISSING ACTIVITIES -->
         <activity android:name=".activities.SettingsActivity" />
         <activity android:name=".activities.ResultActivity" />
+        <activity android:name=".activities.HistoryActivity" />
 
     </application>
 

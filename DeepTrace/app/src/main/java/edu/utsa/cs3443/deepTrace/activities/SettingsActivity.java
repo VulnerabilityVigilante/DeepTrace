@@ -1,5 +1,6 @@
 package edu.utsa.cs3443.deepTrace.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -21,6 +22,7 @@ public class SettingsActivity extends AppCompatActivity {
     CheckBox cbFont;
     CheckBox cbDarkMode;
     Button btnLastScan;
+    Button btnScanHist;
     TextView cbFontText;
     TextView cbDarkModeText;
 
@@ -44,13 +46,14 @@ public class SettingsActivity extends AppCompatActivity {
         cbDarkMode = findViewById(R.id.cbDarkMode);
         cbDarkMode.setChecked(Settings.getSetting("dark mode"));
         btnLastScan = findViewById(R.id.btnLastScan);
+        btnScanHist = findViewById(R.id.btnScanHist);
         cbFontText = findViewById(R.id.cbFontText);
         cbDarkModeText = findViewById(R.id.cbDarkModeText);
         fontSize = Settings.getFontSize();  // Load the font size
         updateFontSizes(fontSize);
     }
 
-    public void onCheckboxClicked(View view) {
+    public void onFontClick(View view) {
         boolean checked = cbFont.isChecked();
         if (checked) {
             fontSize = 27f;
@@ -64,7 +67,7 @@ public class SettingsActivity extends AppCompatActivity {
         Settings.setFontSize(fontSize);
 
     }
-    public void onCheckboxClickedSec(View view) {
+    public void onBackgroundClick(View view) {
         boolean checked = ((CheckBox) view).isChecked();
         Settings.setSetting("dark mode", checked);
         if (checked) {
@@ -79,6 +82,13 @@ public class SettingsActivity extends AppCompatActivity {
         Toast.makeText(this, "Last scanned at:\n" + lastTime, Toast.LENGTH_LONG).show();
     }
 
+    public void onScanHistClick(View view) {
+
+        Intent intent = new Intent(this, HistoryActivity.class);
+        startActivity(intent);
+
+    }
+
     public void onBackClick(View view) {
         finish(); // return to home
     }
@@ -87,6 +97,7 @@ public class SettingsActivity extends AppCompatActivity {
         cbFontText.setTextSize(newFontSize);
         cbDarkModeText.setTextSize(newFontSize);
         btnLastScan.setTextSize(newFontSize);
+        btnScanHist.setTextSize(newFontSize);
     }
 
 }

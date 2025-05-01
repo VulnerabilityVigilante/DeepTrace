@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/historyPageRoot"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Header row -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <ImageButton
+            android:id="@+id/backButton"
+            android:onClick="onBackClick"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/blackarrow"
+            android:scaleType="fitCenter"
+            android:scaleX="-1"
+            android:background="@android:color/transparent"
+            android:contentDescription="Back" />
+
+        <TextView
+            android:id="@+id/HistoryName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Scan History"
+            android:textColor="@android:color/black"
+            android:textSize="35sp"
+            android:layout_gravity="center"
+            android:layout_marginTop="4dp" />
+
+    </FrameLayout>
+
+    <!-- List fills remaining space -->
+    <ListView
+        android:id="@+id/historyList"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+</LinearLayout>

@@ -53,7 +53,7 @@
                 android:text=""
                 android:scaleX="1.5"
                 android:scaleY="1.5"
-                android:onClick="onCheckboxClicked" />
+                android:onClick="onFontClick" />
 
             <TextView
                 android:id="@+id/cbFontText"
@@ -78,7 +78,7 @@
                 android:text=""
                 android:scaleX="1.5"
                 android:scaleY="1.5"
-                android:onClick="onCheckboxClickedSec" />
+                android:onClick="onBackgroundClick" />
 
             <TextView
                 android:id="@+id/cbDarkModeText"
@@ -97,6 +97,16 @@
             android:text="Last Time Scanned"
             android:textAllCaps="false"
             android:onClick="onLastScanClick"/>
+
+        <Button
+            android:id="@+id/btnScanHist"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Scan History"
+            android:textAllCaps="false"
+            android:onClick="onScanHistClick"/>
+
     </LinearLayout>
 
 </FrameLayout>

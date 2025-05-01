@@ -32,6 +32,7 @@ import edu.utsa.cs3443.deepTrace.R;
 import edu.utsa.cs3443.deepTrace.models.ActivityLogger;
 import edu.utsa.cs3443.deepTrace.models.CsvPathScanner;
 import edu.utsa.cs3443.deepTrace.models.FileScanner;
+import edu.utsa.cs3443.deepTrace.models.HistoryLogger;
 import edu.utsa.cs3443.deepTrace.models.LastLogger;
 import edu.utsa.cs3443.deepTrace.models.Settings;
 import edu.utsa.cs3443.deepTrace.models.VirusDatabase;
@@ -40,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int PERMISSION_REQUEST_CODE = 100;
     public static LastLogger lastLogger;
+    private HistoryLogger historyLogger;
     FileScanner scanner;
     ActivityLogger logger;
     File appFilesDir;
@@ -71,6 +73,9 @@ public class MainActivity extends AppCompatActivity {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        historyLogger = new HistoryLogger();
+        HistoryLogger.ensureHistoryLog(this);
 
         float fontSizeSp = Settings.getFontSize();
 
@@ -182,6 +187,16 @@ public class MainActivity extends AppCompatActivity {
         List<File> suspicious = CsvPathScanner.scanFromCSV(csvFile, db);
 
         lastLogger.saveData(this);
+
+        try {
+            historyLogger.appendHistory(this, lastLogger.getTime());
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(this,
+                    "Failed to record scan history",
+                    Toast.LENGTH_SHORT
+            ).show();
+        }
 
         Toast.makeText(this, "Scan started at: " + lastLogger.getTime(), Toast.LENGTH_SHORT).show();
 

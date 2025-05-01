@@ -3,21 +3,21 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="24dp">
+    android:padding="20dp">
 
     <TextView
         android:id="@+id/resultText"
         android:text="Results will appear here"
         android:textSize="20sp"
         android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
     <ImageView
         android:id="@+id/statusImage"
-        android:layout_width="250dp"
-        android:layout_height="250dp"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
         android:layout_gravity="center_horizontal"
         android:scaleType="centerCrop"
         android:src="@drawable/hazardlogo" />
@@ -28,29 +28,33 @@
         android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp">
+        android:layout_marginTop="10dp">
 
-    <ListView
-        android:id="@+id/suspiciousList"
-        android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:dividerHeight="8dp" />
+        <ListView
+            android:id="@+id/suspiciousList"
+            android:layout_width="match_parent"
+            android:layout_height="280dp"
+            android:dividerHeight="8dp"
+            android:layout_marginBottom="10dp"/>
 
-    <Button
-        android:id="@+id/deleteBtn"
-        android:text="DELETE"
-        android:onClick="onDeleteClick"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:backgroundTint="@android:color/holo_red_dark"
-        android:textColor="#fff" />
+        <Button
+            android:id="@+id/deleteBtn"
+            android:text="DELETE"
+            android:onClick="onDeleteClick"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="18dp"
+            android:visibility="gone"
+            android:backgroundTint="@android:color/holo_red_dark"
+            android:textColor="#fff" />
 
 
 
     </LinearLayout>
 
     <Button
+        android:id="@+id/backBtn"
+        android:layout_marginTop="10dp"
         android:text="Back"
         android:onClick="onBackClick"
         android:layout_width="wrap_content"

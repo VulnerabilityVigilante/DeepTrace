@@ -31,6 +31,7 @@ public class ResultActivity extends AppCompatActivity {
 
     TextView resultText;
     Button deleteButton;
+    Button backButton;
     ListView suspiciousListView;
     SuspiciousFileAdapter adapter;
 
@@ -54,6 +55,10 @@ public class ResultActivity extends AppCompatActivity {
         ImageView statusImage = findViewById(R.id.statusImage);
 
         deleteButton = findViewById(R.id.deleteBtn);
+        backButton = findViewById(R.id.backBtn);
+        deleteButton.setTextSize(Settings.getFontSize());                        // ← apply
+        backButton.setTextSize(Settings.getFontSize());
+
         suspiciousListView = findViewById(R.id.suspiciousList);
         remover = new FileRemover();
         remover = new FileRemover();
@@ -106,6 +111,8 @@ public class ResultActivity extends AppCompatActivity {
         super.onResume();
         // make sure the text size updates if they changed it in Settings
         resultText.setTextSize(Settings.getFontSize());
+        deleteButton.setTextSize(Settings.getFontSize());
+        backButton.setTextSize(Settings.getFontSize());
         if (adapter != null) {
             adapter.notifyDataSetChanged();
         }
