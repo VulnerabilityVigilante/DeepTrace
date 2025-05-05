@@ -31,16 +31,23 @@ public class SettingsActivity extends AppCompatActivity {
     float otherSize = 18f;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
         Settings.init(getApplicationContext());
 
         rootLayout = findViewById(R.id.settingsPageRoot);
+
         if (Settings.getSetting("dark mode")) {
+
             rootLayout.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
+
         } else {
+
             rootLayout.setBackgroundColor(getResources().getColor(android.R.color.white));
+
         }
+
         cbFont = findViewById(R.id.cbFont);
         cbFont.setChecked(Settings.getSetting("font"));
         cbDarkMode = findViewById(R.id.cbDarkMode);
@@ -49,37 +56,55 @@ public class SettingsActivity extends AppCompatActivity {
         btnScanHist = findViewById(R.id.btnScanHist);
         cbFontText = findViewById(R.id.cbFontText);
         cbDarkModeText = findViewById(R.id.cbDarkModeText);
-        fontSize = Settings.getFontSize();  // Load the font size
+        fontSize = Settings.getFontSize();
         updateFontSizes(fontSize);
+
     }
 
     public void onFontClick(View view) {
+
         boolean checked = cbFont.isChecked();
+
         if (checked) {
+
             fontSize = 27f;
             otherSize = 25f;
+
         } else {
+
             fontSize = 20f;
             otherSize = 18f;
+
         }
+
         Settings.setSetting("font", checked);
         updateFontSizes(fontSize);
         Settings.setFontSize(fontSize);
 
     }
+
     public void onBackgroundClick(View view) {
+
         boolean checked = ((CheckBox) view).isChecked();
         Settings.setSetting("dark mode", checked);
+
         if (checked) {
+
             rootLayout.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
+
         } else {
+
             rootLayout.setBackgroundColor(getResources().getColor(android.R.color.white));
+
         }
+
     }
+
     public void onLastScanClick(View view) {
-        // sameLogger was already initialized via MainActivity.lastLogger
+
         String lastTime = sameLogger.getTime();
         Toast.makeText(this, "Last scanned at:\n" + lastTime, Toast.LENGTH_LONG).show();
+
     }
 
     public void onScanHistClick(View view) {
@@ -94,10 +119,12 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void updateFontSizes(float newFontSize) {
+
         cbFontText.setTextSize(newFontSize);
         cbDarkModeText.setTextSize(newFontSize);
         btnLastScan.setTextSize(newFontSize);
         btnScanHist.setTextSize(newFontSize);
+
     }
 
 }

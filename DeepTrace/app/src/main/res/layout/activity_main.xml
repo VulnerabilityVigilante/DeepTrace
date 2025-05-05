@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     tools:context=".activities.MainActivity">
 
-    <!-- Matrix Background GIF -->
+    <!-- Matrix Background-->
     <ImageView
         android:id="@+id/gifBackground"
         android:layout_width="match_parent"
@@ -15,19 +15,19 @@
         android:scaleType="centerCrop"
         android:contentDescription="Matrix Background" />
 
-    <!-- Optional overlay for readability -->
+
     <View
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#AA000000" />
 
-    <!-- Foreground UI Layer -->
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="16dp">
 
-        <!-- App Logo -->
+
         <ImageView
             android:id="@+id/appLogo"
             android:layout_width="200dp"
@@ -40,7 +40,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:scaleType="centerInside" />
 
-        <!-- App Title -->
+
         <TextView
             android:id="@+id/homeTitle"
             android:layout_width="wrap_content"
@@ -54,7 +54,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
-        <!-- Action Card -->
+
         <androidx.cardview.widget.CardView
             android:id="@+id/actionCard"
             android:layout_width="0dp"

@@ -29,7 +29,7 @@ public class SuspiciousFileAdapter extends BaseAdapter {
         this.context = context;
         this.files = files;
         selectionMap = new HashMap<>();
-        // Initialize all items as unselected
+
         for (int i = 0; i < files.size(); i++) {
             selectionMap.put(i, false);
         }
@@ -50,7 +50,6 @@ public class SuspiciousFileAdapter extends BaseAdapter {
         return position;
     }
 
-    // Returns the list of files that are selected
     public List<File> getSelectedFiles() {
         List<File> selected = new ArrayList<>();
         for (int i = 0; i < files.size(); i++) {
@@ -80,9 +79,9 @@ public class SuspiciousFileAdapter extends BaseAdapter {
         holder.fileNameText.setText(file.getName());
         holder.fileNameText.setTextSize(Settings.getFontSize());
 
-        // If this file was imported from an external directory, display its original location.
+        // Display the original location of files from external directories.
         if (MainActivity.importedFileOriginalPaths.containsKey(file.getAbsolutePath())) {
-            // Use the original external absolute path if available
+            // if available use the original external absolute path
             holder.sourceText.setText("Source: " + MainActivity.importedFileOriginalPaths.get(file.getAbsolutePath()));
         } else {
             // Otherwise, use the file's own absolute path

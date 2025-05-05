@@ -28,7 +28,7 @@ public class LastLogger {
     }
 
     /**
-     * Sets the name of the park.
+     * Sets the time of the last log
      * @param time
      */
     public void setTime(String time) {
@@ -39,32 +39,42 @@ public class LastLogger {
 
     /**
      *
-     * @return String for name
+     * @return String for time
      */
     public String getTime() {
 
         return time;
 
     }
+
     public void loadLastTime(Context ctx) throws IOException {
-        // openFileInput targets /data/data/your.package/files/lastTime.csv
+
         try (Scanner scan = new Scanner(ctx.openFileInput("lastTime.csv"))) {
-            // skip the header line
+
             if (scan.hasNextLine()) scan.nextLine();
-            // read the actual timestamp
+
             if (scan.hasNextLine()) {
+
                 this.time = scan.nextLine().trim();
+
             }
+
         } catch (IOException e) {
+
             throw new IOException("ERROR: Cannot open lastTime.csv in internal storage", e);
+
         }
+
     }
 
     public void saveData(Context ctx) {
 
         String filename = "lastTime.csv";
+
         String timestamp = new SimpleDateFormat(
+
                 "yyyy-MM-dd HH:mm:ss", Locale.getDefault()
+
         ).format(new Date());
 
         setTime(timestamp);
@@ -75,13 +85,18 @@ public class LastLogger {
 
 
         try (FileOutputStream out = ctx.openFileOutput(filename, Context.MODE_PRIVATE)) {
+
             out.write(sb.toString().getBytes(StandardCharsets.UTF_8));
 
 
             Log.i("LastLogger", "Wrote " + timestamp + " time to " + filename);
+
         } catch (IOException exc) {
+
             Log.e("LastLogger", "ERROR: can't save " + filename, exc);
+
         }
+
     }
 
     public static void ensureLastLogFile(Context ctx) {
@@ -90,14 +105,18 @@ public class LastLogger {
         if (dest.exists()) return;
 
         try (InputStream is = ctx.getAssets().open("lastTime.csv");
+
              FileOutputStream stream = ctx.openFileOutput("lastTime.csv", Context.MODE_PRIVATE)) {
+
             byte[] buffer = new byte[4096];
             int i;
+
             while ((i = is.read(buffer)) != -1) {
 
                 stream.write(buffer, 0, i);
 
             }
+
         } catch (IOException e) {
 
             Log.e("LastLogger", "Failed to copy lastTime.csv to internal storage", e);
@@ -105,4 +124,5 @@ public class LastLogger {
         }
 
     }
+
 }

@@ -19,7 +19,7 @@
         android:background="@android:color/transparent"
         android:contentDescription="Back" />
 
-    <!-- Centered Settings title -->
+
     <TextView
         android:id="@+id/SettingsName"
         android:layout_width="wrap_content"
@@ -30,7 +30,7 @@
         android:layout_gravity="top|center_horizontal"
         android:layout_marginTop="20dp" />
 
-    <!-- Checkboxes below the back button -->
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"

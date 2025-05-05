@@ -6,7 +6,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.util.Log; // Import Log
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -29,13 +29,13 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.HashSet; // Import HashSet
-import java.util.Set; // Import Set
+import java.util.HashSet;
+import java.util.Set;
 
 
 import edu.utsa.cs3443.deepTrace.R;
 import edu.utsa.cs3443.deepTrace.models.ActivityLogger;
-import edu.utsa.cs3443.deepTrace.models.CsvPathScanner; // Keep import in case needed elsewhere
+import edu.utsa.cs3443.deepTrace.models.CsvPathScanner;
 import edu.utsa.cs3443.deepTrace.models.FileScanner;
 import edu.utsa.cs3443.deepTrace.models.HistoryLogger;
 import edu.utsa.cs3443.deepTrace.models.LastLogger;
@@ -95,7 +95,6 @@ public class MainActivity extends AppCompatActivity {
         applyFontSizes(Settings.getFontSize());
         applyDarkModeBackground();
         loadGifBackground();
-        // Call setupBackgroundMusic here, but start it in onResume
         setupBackgroundMusic();
     }
 
@@ -283,7 +282,6 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        // Initialize the VirusDatabase
         VirusDatabase db = new VirusDatabase(virusDbFile);
 
         // List to hold all detected suspicious files (from heuristics or CSV)
@@ -294,7 +292,6 @@ public class MainActivity extends AppCompatActivity {
         // Directories to scan
         List<File> directoriesToScan = new ArrayList<>();
 
-        // Add tmp directory
         if (tmpDir != null && tmpDir.exists() && tmpDir.isDirectory()) {
             directoriesToScan.add(tmpDir);
         }
@@ -325,8 +322,8 @@ public class MainActivity extends AppCompatActivity {
             directoriesToScan.add(musicDir);
         }
 
-        // You can add more directories here if needed, e.g., Environment.getExternalStorageDirectory()
-        // but be mindful of deprecation and permission requirements (MANAGE_APP_ALL_FILES_ACCESS_PERMISSION is crucial).
+        // You can add more directories here, e.g., Environment.getExternalStorageDirectory()
+        // be mindful of deprecation and permission requirements (MANAGE_APP_ALL_FILES_ACCESS_PERMISSION is important).
 
 
         // Traverse directories and apply both checks
@@ -354,27 +351,17 @@ public class MainActivity extends AppCompatActivity {
             Log.d("MainActivity", "Detected: " + file.getAbsolutePath()); // Log detected files
         }
 
-
-        // Log findings (optional, you can refine this to log based on the combined list)
-        // Note: scanner.getFormattedFindings() will only include files detected by the scanner's internal isSuspicious method
-        // You might want to create a new logging method that takes the combined list.
-        // logger.logScan(this, scanner.getFormattedFindings());
-
-
         Toast.makeText(this, "Scan completed. Results in Result Activity.", Toast.LENGTH_SHORT).show();
 
-
-        // Start ResultActivity with the combined list of suspicious file paths
         Intent intent = new Intent(this, ResultActivity.class);
         intent.putStringArrayListExtra("detectedFilePaths", detectedFilePaths);
-        // The "hasThreats" flag should be based on whether any files were detected
+
         intent.putExtra("hasThreats", !suspiciousFiles.isEmpty());
-        // Removed csvPath extra as ResultActivity now gets the full list directly
+
         startActivity(intent);
         // Music will be paused by onPause when the new activity starts
     }
 
-    // Helper method to traverse directories and apply both heuristic and CSV checks
     private void traverseAndScanDirectory(File dir, Set<File> suspiciousFiles, VirusDatabase db, FileScanner scanner) {
         if (dir != null && dir.exists() && dir.isDirectory()) {
             File[] files = dir.listFiles();
@@ -436,7 +423,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // Renamed the method to better reflect its purpose
     private void setupDemoFiles() {
         appFilesDir = getExternalFilesDir(null);
         if (appFilesDir == null) {
@@ -561,11 +547,11 @@ public class MainActivity extends AppCompatActivity {
                     setupDemoFiles();
                 } else {
                     Toast.makeText(this, "Manage External Storage Permission denied. External directories may not be scanned.", Toast.LENGTH_LONG).show();
-                    // You might still want to setup demo files in app-specific storage
-                    setupDemoFiles(); // Attempt to setup demo files in app storage anyway
+
+                    setupDemoFiles();
                 }
             }
-            // For older Android versions, the result is handled in onRequestPermissionsResult
+
         }
     }
 
@@ -580,8 +566,8 @@ public class MainActivity extends AppCompatActivity {
                 setupDemoFiles();
             } else {
                 Toast.makeText(this, "Storage Permission denied. External directories may not be scanned.", Toast.LENGTH_LONG).show();
-                // You might still want to setup demo files in app-specific storage
-                setupDemoFiles(); // Attempt to setup demo files in app storage anyway
+
+                setupDemoFiles();
             }
         }
     }

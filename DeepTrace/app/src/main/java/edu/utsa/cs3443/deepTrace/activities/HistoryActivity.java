@@ -28,71 +28,86 @@ public class HistoryActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
 
-        // 1) Init Settings
         Settings.init(getApplicationContext());
 
-        // 2) Wire up your header TextView & ListView
         historyTitle   = findViewById(R.id.HistoryName);
         ListView lv    = findViewById(R.id.historyList);
 
-        // 3) Apply dark-mode and font-size immediately
         applySettingsToUi();
 
-        // 4) Prepare your history CSV (copies from assets only once)
         HistoryLogger.ensureHistoryLog(this);
 
-        // 5) Load the timestamps into memory
         historyLogger = new HistoryLogger();
+
         try {
+
             historyLogger.loadHistory(this);
+
         } catch (IOException e) {
+
             e.printStackTrace();
+
         }
 
-        // 6) Create an ArrayAdapter that applies font-size (and color) per row
         adapter = new ArrayAdapter<String>(
+
                 this,
                 android.R.layout.simple_list_item_1,
                 historyLogger.getLogTimes()
+
         ) {
             @NonNull
             @Override
             public View getView(int pos, View convertView, ViewGroup parent) {
+
                 TextView tv = (TextView) super.getView(pos, convertView, parent);
                 // set font size
                 tv.setTextSize(Settings.getFontSize());
 
                 return tv;
+
             }
         };
 
-        // 7) Hook the adapter up
         lv.setAdapter(adapter);
+
     }
 
     protected void onResume() {
+
         super.onResume();
-        // re-apply UI settings in case user changed them
+        // re-apply UI settings when user alters
         applySettingsToUi();
-        // rebind the ListView so it picks up any new font-size / colors
+
         if (adapter != null) adapter.notifyDataSetChanged();
+
     }
 
     private void rewriteHistoryCsv() {
+
         try {
-            // Overwrite file, include header, then each line
+
             FileOutputStream fos = openFileOutput("historyLog.csv", Context.MODE_PRIVATE);
             fos.write("Time\n".getBytes(StandardCharsets.UTF_8));
+
             for (String ts : historyLogger.getLogTimes()) {
+
                 fos.write((ts + "\n").getBytes(StandardCharsets.UTF_8));
+
             }
+
             fos.close();
+
         } catch (IOException e) {
+
             e.printStackTrace();
+
         }
+
     }
 
     public void onBackClick (View view){
@@ -102,16 +117,24 @@ public class HistoryActivity extends AppCompatActivity {
     }
 
     private void applySettingsToUi() {
-        // Grab it as a View, since in XML it’s a LinearLayout
+
         View root = findViewById(R.id.historyPageRoot);
         if (Settings.getSetting("dark mode")) {
+
             root.setBackgroundColor(
+
                     getResources().getColor(android.R.color.darker_gray)
+
             );
+
         } else {
+
             root.setBackgroundColor(
+
                     getResources().getColor(android.R.color.white)
+
             );
+
         }
 
     }
