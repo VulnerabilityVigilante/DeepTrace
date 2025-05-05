@@ -18,13 +18,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.util.ArrayList; // Import ArrayList
 import java.util.List;
 
 import edu.utsa.cs3443.deepTrace.R;
 import edu.utsa.cs3443.deepTrace.adapters.SuspiciousFileAdapter;
-import edu.utsa.cs3443.deepTrace.models.CsvPathScanner;
+import edu.utsa.cs3443.deepTrace.models.CsvPathScanner; // Keep import in case needed for other reasons
 import edu.utsa.cs3443.deepTrace.models.FileRemover;
-import edu.utsa.cs3443.deepTrace.models.VirusDatabase;
+import edu.utsa.cs3443.deepTrace.models.VirusDatabase; // Keep import in case needed for other reasons
 import edu.utsa.cs3443.deepTrace.models.Settings;
 
 public class ResultActivity extends AppCompatActivity {
@@ -63,22 +64,20 @@ public class ResultActivity extends AppCompatActivity {
         remover = new FileRemover();
         remover = new FileRemover();
 
-        // Retrieve the folder path from the Intent extras
-        String csvPath = getIntent().getStringExtra("csvPath");
-        if (csvPath == null) {
-            Toast.makeText(this, "No CSV path provided", Toast.LENGTH_SHORT).show();
-            return;
+        // --- MODIFIED: Retrieve the list of suspicious file paths from the Intent extras ---
+        ArrayList<String> detectedFilePaths = getIntent().getStringArrayListExtra("detectedFilePaths");
+        detectedFiles = new ArrayList<>();
+        if (detectedFilePaths != null) {
+            for (String path : detectedFilePaths) {
+                File file = new File(path);
+                // Add file only if it actually exists on the file system
+                if (file.exists()) {
+                    detectedFiles.add(file);
+                } else {
+                    Log.w("ResultActivity", "Detected file path does not exist: " + path);
+                }
+            }
         }
-
-        File csvFile = new File(csvPath);
-        Log.d("ResultActivity", "Reading from CSV: " + csvFile.getAbsolutePath());
-        File virusDbFile = copyVirusDBFromAssets(this);
-        VirusDatabase db = new VirusDatabase(virusDbFile);
-
-        detectedFiles = CsvPathScanner.scanFromCSV(csvFile, db);
-
-
-
 
 
         // Log the found files for debugging
@@ -86,27 +85,30 @@ public class ResultActivity extends AppCompatActivity {
             Log.d("ResultActivity", "Detected file: " + f.getAbsolutePath());
         }
 
-        boolean hasThreats = getIntent().getBooleanExtra("hasThreats", false);
-        if (hasThreats && !detectedFiles.isEmpty()) {
+        // Determine if threats were found based on the list size
+        boolean hasThreats = !detectedFiles.isEmpty();
+
+        if (hasThreats) {
             resultText.setText("⚠️ Suspicious Files Detected");
-            statusImage.setImageResource(R.drawable.hazardlogo);
+            statusImage.setImageResource(R.drawable.hazardlogo); // Assuming hazardlogo is your skull icon
             deleteButton.setVisibility(View.VISIBLE);
-            statusImage.setImageResource(R.drawable.hazardlogo); // Replace with your image in res/drawable
+            outerLayout.setBackgroundColor(Color.parseColor("#FFFF99")); // Yellow background
             // Set up the ListView with the custom adapter to show toggles
             adapter = new SuspiciousFileAdapter(this, detectedFiles);
-            outerLayout.setBackgroundColor(Color.parseColor("#FFFF99"));
             suspiciousListView.setAdapter(adapter);
         } else {
             resultText.setText("✅ No Virus Was Found!");
-            statusImage.setImageResource(R.drawable.thumbsup);
+            statusImage.setImageResource(R.drawable.thumbsup); // Assuming thumbsup is your clear icon
             deleteButton.setVisibility(View.GONE);
-            outerLayout.setBackgroundColor(getResources().getColor(android.R.color.holo_blue_light));
-            statusImage.setImageResource(R.drawable.thumbsup);
+            outerLayout.setBackgroundColor(getResources().getColor(android.R.color.holo_blue_light)); // Blue background
+            // Clear the adapter or set a different view for no results if needed
+            suspiciousListView.setAdapter(null);
         }
 
         applyAppropriateBackground(outerLayout, hasThreats);
     }
 
+    @Override // Added @Override for clarity
     protected void onResume() {
         super.onResume();
         // make sure the text size updates if they changed it in Settings
@@ -117,7 +119,8 @@ public class ResultActivity extends AppCompatActivity {
             adapter.notifyDataSetChanged();
         }
         LinearLayout outerLayout = findViewById(R.id.outerLayout);
-        boolean hasThreats = getIntent().getBooleanExtra("hasThreats", false);
+        // Recalculate hasThreats based on the current detectedFiles list
+        boolean hasThreats = !detectedFiles.isEmpty();
         applyAppropriateBackground(outerLayout, hasThreats);
 
     }
@@ -147,38 +150,47 @@ public class ResultActivity extends AppCompatActivity {
             boolean allDeleted = true;
             for (File file : filesToDelete) {
                 // Check if this file was imported from an external directory.
+                // This logic might need adjustment depending on how importedFileOriginalPaths is used.
                 if (MainActivity.importedFileOriginalPaths.containsKey(file.getAbsolutePath())) {
                     String originalPath = MainActivity.importedFileOriginalPaths.get(file.getAbsolutePath());
                     boolean deletedOriginal = new File(originalPath).delete();
                     if (!deletedOriginal) {
                         allDeleted = false;
+                        Log.e("ResultActivity", "Failed to delete original imported file: " + originalPath);
+                    } else {
+                        Log.d("ResultActivity", "Deleted original imported file: " + originalPath);
+                        MainActivity.importedFileOriginalPaths.remove(file.getAbsolutePath()); // Remove from map after deletion
                     }
                 } else {
                     // Delete local file.
                     if (!file.delete()) {
                         allDeleted = false;
+                        Log.e("ResultActivity", "Failed to delete local file: " + file.getAbsolutePath());
+                    } else {
+                        Log.d("ResultActivity", "Deleted local file: " + file.getAbsolutePath());
                     }
                 }
             }
             if (allDeleted) {
                 Toast.makeText(this, "Selected files deleted successfully", Toast.LENGTH_SHORT).show();
+                // After deletion, update the displayed list
+                detectedFiles.removeAll(filesToDelete); // Remove deleted files from the list
+                adapter.notifyDataSetChanged(); // Update the list view
+                // Check if there are still threats after deletion
+                boolean hasThreats = !detectedFiles.isEmpty();
+                applyAppropriateBackground(findViewById(R.id.outerLayout), hasThreats);
+                if (!hasThreats) {
+                    resultText.setText("✅ No Virus Was Found!");
+                    ImageView statusImage = findViewById(R.id.statusImage);
+                    statusImage.setImageResource(R.drawable.thumbsup);
+                    deleteButton.setVisibility(View.GONE);
+                    suspiciousListView.setAdapter(null); // Clear the list view
+                }
+
             } else {
                 Toast.makeText(this, "Failed to delete some files", Toast.LENGTH_SHORT).show();
             }
-            // Refresh the list after deletion.
-            String csvPath = getIntent().getStringExtra("csvPath");
-            if (csvPath == null) {
-                Toast.makeText(this, "No CSV path provided", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            File csvFile = new File(csvPath);
-            File virusDbFile = copyVirusDBFromAssets(this);
-            VirusDatabase db = new VirusDatabase(virusDbFile);
-
-            detectedFiles = CsvPathScanner.scanFromCSV(csvFile, db);
-            adapter = new SuspiciousFileAdapter(this, detectedFiles);
-            suspiciousListView.setAdapter(adapter);
+            // Note: A full re-scan after deletion might be more robust in a real app.
 
         }
     }
@@ -188,11 +200,14 @@ public class ResultActivity extends AppCompatActivity {
         finish();
     }
 
+    // This method seems intended for copying the virus DB to internal storage
+    // It's still used by VirusDatabase, but ResultActivity doesn't directly use the CSV file path anymore.
     private File copyVirusDBFromAssets(Context context) {
         File outFile = new File(context.getFilesDir(), "virus_db.csv");
 
+        // Keep this to ensure the latest DB from assets is always used for now
         if (outFile.exists()) {
-            outFile.delete(); // 👈 force recopy every time
+            outFile.delete();
         }
 
         try (InputStream is = context.getAssets().open("virus_db.csv");
@@ -203,16 +218,14 @@ public class ResultActivity extends AppCompatActivity {
             while ((length = is.read(buffer)) > 0) {
                 fos.write(buffer, 0, length);
             }
-            System.out.println("✅ Copied updated virus_db.csv to: " + outFile.getAbsolutePath());
+            Log.d("ResultActivity", "✅ Copied virus_db.csv to: " + outFile.getAbsolutePath());
+
             return outFile;
 
         } catch (Exception e) {
             e.printStackTrace();
+            Log.e("ResultActivity", "❌ Failed to copy virus_db.csv", e);
             return null;
         }
     }
-
-
-
-
 }
