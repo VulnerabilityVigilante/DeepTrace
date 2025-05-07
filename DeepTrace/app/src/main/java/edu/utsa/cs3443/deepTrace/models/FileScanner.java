@@ -7,6 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+/**
+ * Scans directories and files to identify those that match heuristic
+ * rules for being potentially malicious.
+ */
 public class FileScanner {
 
     private final List<File> suspiciousFiles = new ArrayList<>();
@@ -31,6 +35,10 @@ public class FileScanner {
         return suspiciousFiles;
     }
 
+    /**
+     * Recursively scans all files and subdirectories within a given directory.
+     * @param dir The directory to scan.
+     */
     private void scanDirectory(File dir) {
         if (dir != null && dir.exists() && dir.isDirectory()) {
             Log.d("FileScanner", "Scanning directory: " + dir.getAbsolutePath());
@@ -50,8 +58,16 @@ public class FileScanner {
     }
 
     /**
-     * Checks if a file is suspicious based on its name and heuristic patterns.
+     * Checks if a file appears suspicious based on a series of heuristic rules such as:
+     * - Executable/script extensions
+     * - Gibberish or misleading file names
+     * - Known malware keywords
+     * - Lure-based naming patterns
+     *
+     * @param file The file to evaluate.
+     * @return {@code true} if the file is considered suspicious; otherwise {@code false}.
      */
+
     public boolean isSuspicious(File file) {
         String name = file.getName().toLowerCase();
         String absolutePath = file.getAbsolutePath().toLowerCase();
@@ -117,6 +133,12 @@ public class FileScanner {
         return false;
     }
 
+    /**
+     * Heuristically determines if a file name is "gibberish", indicating possible obfuscation or malware.
+     * A name is considered gibberish if it is long and contains relatively few vowels.
+     * @param name The file name (without path) to check.
+     * @return {@code true} if the name appears gibberish; otherwise {@code false}.
+     */
     private boolean isGibberish(String name) {
         String clean = name.replaceAll("[^a-zA-Z0-9]", "");
         // Refined gibberish check: longer names with few vowels
@@ -136,6 +158,12 @@ public class FileScanner {
         return false;
     }
 
+    /**
+     * Checks whether a filename has multiple extensions (e.g., "invoice.pdf.exe").
+     *
+     * @param name The filename to evaluate.
+     * @return {@code true} if multiple extensions are detected; otherwise {@code false}.
+     */
     // Helper to check for multiple extensions
     private boolean hasMultipleExtensions(String name) {
         // Check if the name contains more than one dot, and the last dot is not at the beginning
@@ -151,6 +179,13 @@ public class FileScanner {
         return false;
     }
 
+    /**
+     * Determines if a filename includes a common "lure" word (e.g., "invoice", "report")
+     * combined with a dangerous extension like ".exe" or ".js".
+     *
+     * @param name The filename to evaluate.
+     * @return {@code true} if it matches the lure pattern; otherwise {@code false}.
+     */
     // Helper to check for common lure names with suspicious extensions
     private boolean isLureNameWithSuspiciousExtension(String name) {
         String lowerName = name.toLowerCase();
@@ -178,7 +213,9 @@ public class FileScanner {
 
 
     /**
-     * Returns a formatted list of findings (file paths) for logging.
+     * Returns a list of absolute paths for all suspicious files detected during the scan.
+     *
+     * @return A list of file paths as strings.
      */
     public List<String> getFormattedFindings() {
         List<String> findings = new ArrayList<>();

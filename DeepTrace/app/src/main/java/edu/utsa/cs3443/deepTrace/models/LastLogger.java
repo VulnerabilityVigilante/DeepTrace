@@ -17,10 +17,19 @@ import java.util.Scanner;
 
 import edu.utsa.cs3443.deepTrace.activities.MainActivity;
 
+/**
+ * Manages logging and persistence of the last recorded timestamp.
+ * Stores the timestamp in a CSV file ("lastTime.csv") within the app's internal storage.
+ */
 public class LastLogger {
 
     private String time;
 
+    /**
+     * Constructs a LastLogger with the given initial timestamp.
+     *
+     * @param time The initial timestamp to set.
+     */
     public LastLogger(String time) {
 
         this.time = time;
@@ -28,8 +37,9 @@ public class LastLogger {
     }
 
     /**
-     * Sets the time of the last log
-     * @param time
+     * Sets the last recorded timestamp.
+     *
+     * @param time The timestamp to set.
      */
     public void setTime(String time) {
 
@@ -38,8 +48,9 @@ public class LastLogger {
     }
 
     /**
+     * Returns the last recorded timestamp.
      *
-     * @return String for time
+     * @return The timestamp as a String.
      */
     public String getTime() {
 
@@ -47,6 +58,13 @@ public class LastLogger {
 
     }
 
+    /**
+     * Loads the last recorded timestamp from the internal file "lastTime.csv".
+     * If the file cannot be opened or read, an IOException is thrown.
+     *
+     * @param ctx The Context used to access internal storage.
+     * @throws IOException If the file cannot be opened or read.
+     */
     public void loadLastTime(Context ctx) throws IOException {
 
         try (Scanner scan = new Scanner(ctx.openFileInput("lastTime.csv"))) {
@@ -67,6 +85,12 @@ public class LastLogger {
 
     }
 
+    /**
+     * Saves the current timestamp to the internal file "lastTime.csv".
+     * Generates a timestamp in the format "yyyy-MM-dd HH:mm:ss".
+     *
+     * @param ctx The Context used to access internal storage.
+     */
     public void saveData(Context ctx) {
 
         String filename = "lastTime.csv";
@@ -99,6 +123,12 @@ public class LastLogger {
 
     }
 
+    /**
+     * Ensures that the "lastTime.csv" file exists in internal storage.
+     * If it does not exist, copies the default version from the assets folder.
+     *
+     * @param ctx The Context used to access assets and internal files.
+     */
     public static void ensureLastLogFile(Context ctx) {
 
         File dest = new File(ctx.getFilesDir(), "lastTime.csv");

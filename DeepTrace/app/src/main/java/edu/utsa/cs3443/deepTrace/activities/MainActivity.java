@@ -42,6 +42,13 @@ import edu.utsa.cs3443.deepTrace.models.LastLogger;
 import edu.utsa.cs3443.deepTrace.models.Settings;
 import edu.utsa.cs3443.deepTrace.models.VirusDatabase;
 
+/**
+ * Main entry point for the app.
+ * Manages storage permissions, demo file setup, UI,
+ * background music, and launching virus scans.
+ *
+ */
+
 public class MainActivity extends AppCompatActivity {
 
     private static final int PERMISSION_REQUEST_CODE = 100;
@@ -55,6 +62,10 @@ public class MainActivity extends AppCompatActivity {
 
     public static HashMap<String, String> importedFileOriginalPaths = new HashMap<>();
 
+    /**
+     * Initializes the UI, permissions, background music, settings, and demo files.
+     * @param savedInstanceState State of the activity saved during a previous instance (if any).
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,6 +109,9 @@ public class MainActivity extends AppCompatActivity {
         setupBackgroundMusic();
     }
 
+    /**
+     *  Reapplies UI settings and resumes background music unless dark mode is enabled.
+     */
     @Override
     protected void onResume() {
         super.onResume();
@@ -135,6 +149,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     *  Pauses the background music when the activity is not visible.
+     */
     @Override
     protected void onPause() {
         super.onPause();
@@ -150,6 +167,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Releases the MediaPlayer resources to avoid memory leaks.
+     */
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -164,6 +184,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     *  Applies font sizes from settings to key UI components.
+     *  @param sp Font size in scale-independent pixels.
+     */
     private void applyFontSizes(float sp) {
         TextView homeTitle = findViewById(R.id.homeTitle);
         Button scanBtn = findViewById(R.id.scanBtn);
@@ -174,6 +198,9 @@ public class MainActivity extends AppCompatActivity {
         settingsBtn.setTextSize(sp);
     }
 
+    /**
+     * Applies the appropriate background color based on dark mode settings.
+     */
     private void applyDarkModeBackground() {
         View root = findViewById(R.id.mainLayout);
 
@@ -184,6 +211,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Loads a looping GIF background unless dark mode is enabled.
+     */
     private void loadGifBackground() {
         ImageView gifBg = findViewById(R.id.gifBackground);
         if (gifBg != null) {
@@ -199,6 +229,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Sets up the background music using a looping MediaPlayer unless dark mode is enabled.
+     * Includes error and completion listeners for debugging and control.
+     */
     // Renamed and adjusted to only set up the MediaPlayer
     private void setupBackgroundMusic() {
         Log.d("MusicDebug", "setupBackgroundMusic called");
@@ -256,6 +290,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * Triggered when the user presses the "Scan" button.
+     * This method performs a heuristic and CSV virus scan over common directories,
+     * logs results, and launches the ResultActivity to display the findings.
+     * @param view The view that triggered this method.
+     */
     public void onScanClick(View view) {
         if (tmpDir == null || !tmpDir.exists()) {
             Toast.makeText(this, "tmp directory not available", Toast.LENGTH_SHORT).show();
@@ -362,6 +402,13 @@ public class MainActivity extends AppCompatActivity {
         // Music will be paused by onPause when the new activity starts
     }
 
+    /**
+     * Recursively scans a directory using both heuristic and CSV-based methods.
+     * @param dir The directory to scan.
+     * @param suspiciousFiles Set to store files flagged as suspicious.
+     * @param db Virus database for known signature matching.
+     * @param scanner Heuristic scanner instance.
+     */
     private void traverseAndScanDirectory(File dir, Set<File> suspiciousFiles, VirusDatabase db, FileScanner scanner) {
         if (dir != null && dir.exists() && dir.isDirectory()) {
             File[] files = dir.listFiles();
@@ -396,6 +443,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * Copies the virus definition CSV file from the app's assets to internal storage.
+     * @param context The application context.
+     * @return The copied virus database file, or null if copying fails.
+     */
     private File copyVirusDBFromAssets(Context context) {
         File outFile = new File(context.getFilesDir(), "virus_db.csv");
 
@@ -423,6 +475,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Creates demo suspicious files across different storage directories for testing scan results.
+     * Includes heuristic and CSV-detectable filenames.
+     */
     private void setupDemoFiles() {
         appFilesDir = getExternalFilesDir(null);
         if (appFilesDir == null) {
@@ -497,10 +553,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * Opens the Settings activity when the settings button is clicked.
+     * @param view The button view that was clicked.
+     */
     public void onSettingsClick(View view) {
         startActivity(new Intent(this, SettingsActivity.class));
     }
 
+
+    /**
+     * Checks whether the app has necessary storage permissions to read external directories.
+     * @return True if permission is granted, false otherwise.
+     */
     private boolean hasStoragePermission() {
         // On Android R and above, manage external storage permission is needed for broad access.
         // For simpler cases targeting specific directories like getExternalFilesDir or Downloads,
@@ -514,6 +579,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Requests necessary storage permissions based on Android version.
+     * On Android 11+ this opens the system settings for "Manage All Files Access".
+     */
     private void requestStoragePermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             // Direct user to the "Manage External Storage" settings screen
@@ -537,6 +606,13 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Called when an activity launched for result (like permissions screen) returns a result.
+     * Handles the permission result and sets up demo files if granted.
+     * @param requestCode Code identifying the request.
+     * @param resultCode Result code returned by the child activity.
+     * @param data Intent data (if any).
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -556,6 +632,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * Called after the user responds to a permission request dialog.
+     * Handles permission grant or denial logic and initializes file setup accordingly.
+     * @param requestCode The request code passed in requestPermissions.
+     * @param permissions The requested permissions.
+     * @param grantResults The grant results for the corresponding permissions.
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);

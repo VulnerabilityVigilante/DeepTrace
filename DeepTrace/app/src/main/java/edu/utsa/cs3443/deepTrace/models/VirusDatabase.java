@@ -8,14 +8,29 @@ import java.security.MessageDigest;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Loads a CSV virus database, checks files for matches, and computes SHA-256 hashes.
+ */
 public class VirusDatabase {
 
     private final Map<String, String> virusMap = new HashMap<>(); // filename -> sha256
 
+    /**
+     * Constructs a VirusDatabase by loading the database from the specified CSV file.
+     *
+     * @param csvFile The CSV file containing virus entries (filename, hash).
+     */
     public VirusDatabase(File csvFile) {
         loadDatabase(csvFile);
     }
 
+    /**
+     * Loads the virus database from a CSV file. The file must have a header, and the entries
+     * should have the format: filename, (optional columns), hash. Populates the {@link #virusMap}
+     * with these entries.
+     *
+     * @param csv The CSV file containing the virus database entries.
+     */
     private void loadDatabase(File csv) {
         if (!csv.exists()) {
             System.out.println("🚫 virus_db.csv NOT FOUND at: " + csv.getAbsolutePath());
@@ -50,6 +65,14 @@ public class VirusDatabase {
 
     }
 
+    /**
+     * Checks if the provided file matches a virus entry in the database.
+     * The check is done based on the filename (case-insensitive).
+     *
+     * @param file The file to check against the virus database.
+     * @return {@code true} if the file's name matches an entry in the virus database;
+     *         {@code false} otherwise.
+     */
     public boolean isMatch(File file) {
         String name = file.getName().toLowerCase();
         boolean result = virusMap.containsKey(name);
@@ -59,6 +82,13 @@ public class VirusDatabase {
     }
 
 
+    /**
+     * Computes the SHA-256 hash of a given file. This method reads the file in chunks
+     * and uses a MessageDigest to calculate the hash.
+     *
+     * @param file The file whose SHA-256 hash is to be computed.
+     * @return The computed SHA-256 hash of the file as a hexadecimal string.
+     */
     public static String computeSHA256(File file) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");

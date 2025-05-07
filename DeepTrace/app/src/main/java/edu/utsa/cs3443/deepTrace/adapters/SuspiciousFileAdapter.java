@@ -19,12 +19,20 @@ import java.util.Map;
 import edu.utsa.cs3443.deepTrace.R;
 import edu.utsa.cs3443.deepTrace.models.Settings;
 
+/**
+ * Displays a list of suspicious files with checkboxes for selection.
+ */
 public class SuspiciousFileAdapter extends BaseAdapter {
     private Context context;
     private List<File> files;
     // Map to hold checkbox state (position -> selected)
     private Map<Integer, Boolean> selectionMap;
 
+    /**
+     * Constructs a new {@code SuspiciousFileAdapter}.
+     * @param context The current context (usually the activity).
+     * @param files A list of suspicious {@link File} objects to display.
+     */
     public SuspiciousFileAdapter(Context context, List<File> files) {
         this.context = context;
         this.files = files;
@@ -35,21 +43,39 @@ public class SuspiciousFileAdapter extends BaseAdapter {
         }
     }
 
+    /**
+     * Returns the number of files in the list.
+     * @return the total number of suspicious files.
+     */
     @Override
     public int getCount() {
         return files.size();
     }
 
+    /**
+     * Returns the file object at the specified position.
+     * @param position the index in the list.
+     * @return the {@link File} object at the given position.
+     */
     @Override
     public Object getItem(int position) {
         return files.get(position);
     }
 
+    /**
+     * Returns the unique ID for the item at the given position.
+     * @param position the item index.
+     * @return the position itself as the ID.
+     */
     @Override
     public long getItemId(int position) {
         return position;
     }
 
+    /**
+     * Retrieves the list of files that are currently selected via checkboxes.
+     * @return a list of selected {@link File} objects.
+     */
     public List<File> getSelectedFiles() {
         List<File> selected = new ArrayList<>();
         for (int i = 0; i < files.size(); i++) {
@@ -60,6 +86,13 @@ public class SuspiciousFileAdapter extends BaseAdapter {
         return selected;
     }
 
+    /**
+     * Generates the view for each list item. Handles view recycling and checkbox state management.
+     * @param position The position of the item within the list.
+     * @param convertView A recycled view to reuse, if available.
+     * @param parent The parent view group.
+     * @return A fully populated view for the list item.
+     */
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
@@ -102,7 +135,9 @@ public class SuspiciousFileAdapter extends BaseAdapter {
     }
 
 
-
+    /**
+     * Internal view holder class to optimize view lookup for list items.
+     */
     static class ViewHolder {
         TextView fileNameText;
         CheckBox checkBox;

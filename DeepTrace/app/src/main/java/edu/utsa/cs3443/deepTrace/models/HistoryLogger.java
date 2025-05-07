@@ -15,17 +15,30 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Scanner;
 
+/**
+ * Handles logging and persistence of scan history timestamps.
+ * Maintains a list of the most recent scan times and stores them in a CSV file
+ * ("historyLog.csv") in the app's internal storage.
+ */
+
 public class HistoryLogger {
 
     private ArrayList<String> logTimes;
 
 
+    /**
+     * Creates a new HistoryLogger with an empty history list.
+     */
     public HistoryLogger() {
 
         this.logTimes = new ArrayList<>();
 
     }
 
+    /**
+     * Returns the list of logged scan timestamps.
+     * @return A list of timestamp strings.
+     */
     public ArrayList<String> getLogTimes() {
 
         return logTimes;
@@ -33,18 +46,34 @@ public class HistoryLogger {
     }
 
 
+    /**
+     * Sets the current log history with a new list of timestamps.
+     *
+     * @param logTimes A list of timestamp strings to replace the current log.
+     */
     public void setLogTimes(ArrayList<String> logTimes) {
 
         this.logTimes = logTimes;
 
     }
 
+    /**
+     * Returns the number of entries in the log history.
+     *
+     * @return The number of recorded timestamps.
+     */
     public int getSizeOfLog() {
 
         return logTimes.size();
 
     }
 
+    /**
+     * Loads the history of scan timestamps from the internal file "historyLog.csv".
+     *
+     * @param ctx The context used to access internal storage.
+     * @throws IOException If an I/O error occurs while reading the file.
+     */
     public void loadHistory(Context ctx) throws IOException {
 
         logTimes.clear();
@@ -64,7 +93,12 @@ public class HistoryLogger {
     }
 
     /**
-     * Add one timestamp, trim to the 5 most recent, and rewrite the CSV.
+     * Appends a new scan timestamp to the history, keeping only the five most recent entries.
+     * After appending, rewrites the CSV file in internal storage.
+     *
+     * @param ctx       The context used to access internal storage.
+     * @param timestamp The timestamp to add.
+     * @throws IOException If an I/O error occurs during read/write operations.
      */
     public void appendHistory(Context ctx, String timestamp) throws IOException {
 
@@ -104,7 +138,12 @@ public class HistoryLogger {
 
     }
 
-    /** Copy the CSV from assets into internal storage just once*/
+    /**
+     * Ensures that the "historyLog.csv" file exists in internal storage.
+     * If it does not, copies the default version from the app's assets folder.
+     *
+     * @param ctx The context used to access assets and internal files.
+     */
     public static void ensureHistoryLog(Context ctx) {
 
         File dest = new File(ctx.getFilesDir(), "historyLog.csv");

@@ -6,8 +6,18 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Reads file paths from a CSV and returns those flagged as suspicious.
+ */
 public class CsvPathScanner {
 
+    /**
+     * Scans file paths listed line-by-line in a given CSV file and checks each one
+     * against the provided {@link VirusDatabase} to identify potentially malicious files.
+     * @param csvFile The CSV file containing absolute file paths (one per line).
+     * @param db The virus database used to identify suspicious files.
+     * @return A list of {@link File} objects deemed suspicious.
+     */
     public static List<File> scanFromCSV(File csvFile, VirusDatabase db) {
         List<File> suspicious = new ArrayList<>();
 

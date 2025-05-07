@@ -27,7 +27,10 @@ import edu.utsa.cs3443.deepTrace.models.CsvPathScanner;
 import edu.utsa.cs3443.deepTrace.models.FileRemover;
 import edu.utsa.cs3443.deepTrace.models.VirusDatabase;
 import edu.utsa.cs3443.deepTrace.models.Settings;
-
+/**
+ * Shows the results of a virus scan, displays any suspicious files,
+ * allows deletion of selected items, and handles navigation back.
+ */
 public class ResultActivity extends AppCompatActivity {
 
     TextView resultText;
@@ -41,7 +44,11 @@ public class ResultActivity extends AppCompatActivity {
 
 
 
-
+    /**
+     * Initializes the activity, sets up UI components, and processes the detected file list
+     * received from the scan result in {@code MainActivity}.
+     * @param savedInstanceState Bundle for restoring activity state (unused).
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -120,6 +127,9 @@ public class ResultActivity extends AppCompatActivity {
         applyAppropriateBackground(outerLayout, hasThreats);
     }
 
+    /**
+     * Updates UI when the activity resumes, such as font sizes and background color.
+     */
     @Override
     protected void onResume() {
 
@@ -142,6 +152,11 @@ public class ResultActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Applies appropriate background color based on theme and scan result.
+     * @param root Root layout view to apply background color.
+     * @param hasThreats Whether any suspicious files were detected.
+     */
     private void applyAppropriateBackground(View root, boolean hasThreats) {
 
         if (Settings.getSetting("dark mode")) {
@@ -168,6 +183,11 @@ public class ResultActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Deletes all selected suspicious files, including imported originals if present.
+     * Updates UI based on deletion result and adjusts the display list.
+     * @param view The delete button triggering this action.
+     */
     public void onDeleteClick(View view) {
 
         if (adapter != null) {
@@ -249,10 +269,19 @@ public class ResultActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * Handles the back button click and closes the activity.
+     * @param view The back button triggering this action.
+     */
     public void onBackClick(View view) {
         finish();
     }
 
+    /**
+     * Copies the virus database CSV file from assets into the app’s internal storage.
+     * @param context The application context.
+     * @return The {@code File} representing the copied virus DB, or {@code null} if the copy failed.
+     */
     private File copyVirusDBFromAssets(Context context) {
 
         File outFile = new File(context.getFilesDir(), "virus_db.csv");

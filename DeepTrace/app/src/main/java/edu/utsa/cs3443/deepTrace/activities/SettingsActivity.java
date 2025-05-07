@@ -15,6 +15,9 @@ import edu.utsa.cs3443.deepTrace.R;
 import edu.utsa.cs3443.deepTrace.models.LastLogger;
 import edu.utsa.cs3443.deepTrace.models.Settings;
 
+/**
+ * Manages font size, theme mode, and provides access to scan history and last scan time.
+ */
 public class SettingsActivity extends AppCompatActivity {
 
     LastLogger sameLogger = MainActivity.lastLogger;
@@ -29,6 +32,12 @@ public class SettingsActivity extends AppCompatActivity {
 
     float fontSize = 25f;
     float otherSize = 18f;
+
+    /**
+     * Initializes the settings activity, applies stored preferences,
+     * and binds UI elements to variables.
+     * @param savedInstanceState The previously saved state, if any.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -61,6 +70,11 @@ public class SettingsActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Triggered when the font size checkbox is clicked.
+     * Updates app-wide font size setting based on user selection.
+     * @param view The view that was clicked.
+     */
     public void onFontClick(View view) {
 
         boolean checked = cbFont.isChecked();
@@ -83,6 +97,11 @@ public class SettingsActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Triggered when the dark mode checkbox is clicked.
+     * Applies dark or light background color to the settings screen.
+     * @param view The view that was clicked.
+     */
     public void onBackgroundClick(View view) {
 
         boolean checked = ((CheckBox) view).isChecked();
@@ -100,6 +119,10 @@ public class SettingsActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Displays a toast showing the timestamp of the most recent scan.
+     * @param view The view that was clicked.
+     */
     public void onLastScanClick(View view) {
 
         String lastTime = sameLogger.getTime();
@@ -107,6 +130,11 @@ public class SettingsActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Opens the history screen to display past scan results.
+     *
+     * @param view the “Scan History” button that was clicked
+     */
     public void onScanHistClick(View view) {
 
         Intent intent = new Intent(this, HistoryActivity.class);
@@ -114,10 +142,18 @@ public class SettingsActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Handles the back button click to return to the previous screen.
+     * @param view The view that was clicked.
+     */
     public void onBackClick(View view) {
         finish(); // return to home
     }
 
+    /**
+     * Applies the given font size to all relevant text and button views on this screen.
+     * @param newFontSize The size to apply to all UI elements.
+     */
     private void updateFontSizes(float newFontSize) {
 
         cbFontText.setTextSize(newFontSize);
