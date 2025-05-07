@@ -63,17 +63,16 @@ The project is meticulously organized into several key packages and components:
 
 ## How to Use (Assumed Flow)
 
-1.  **Launch the App:** Open the DeepTrace Anti-Virus application. The main screen will prominently display options to "Start Scan" and access "Settings". Demo viruses are set up in the background once permissions are granted.
+1.  **Launch the App:** Open the DeepTrace Anti-Virus application. If this the first time opening DeepTrace, file access will be requested. Select `Allow access to manage all files` and click the back button. Demo viruses are set up in the background once permissions are granted. The main screen will prominently display options to "Start Scan" and access "Settings". 
 2.  **Start Scan:** Tap the "Start Scan" button to initiate a comprehensive scan of your device's files (including directories where demo viruses were placed).
-3.  **View Results:** Once the scan is complete, the `ResultActivity` will display a list of any suspicious files found (which should include the demo viruses if present). The screen will clearly indicate if threats are found, potentially with an image of a hazard logo.
+3.  **View Results:** Once the scan is complete, the `ResultActivity` will display a list of any suspicious files found (which should include the demo viruses). The screen will clearly indicate if threats are found, potentially with an image of a hazard logo.
 4.  **Delete Files (Optional):** If suspicious files are found, you can select them from the list and tap a "DELETE" button to remove them. The delete button will only become visible if suspicious files are present.
 5.  **Check Settings:**
-    -   Navigate to "Settings" from the main screen.
+    -   Press the back button and navigate to "Settings" from the main screen.
     -   Change the font size for better readability.
     -   Enable or disable "Dim Light Mode".
     -   View the "Last Time Scanned".
     -   Access "Scan History" to see details of the last five scans.
-6.  **View Scan History:** Access the scan history from settings or potentially another part of the app to see a list of past scan dates.
 
 ## Known Issues
 
