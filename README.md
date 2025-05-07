@@ -51,6 +51,7 @@ The project is organized into several packages and components:
 4.  **Delete Files (Optional):** If suspicious files are found, you can select them from the list and tap a "DELETE" button to remove them. The delete button will only become visible if suspicious files are present.
 5.  **Check Settings:**
     -   Navigate to "Settings" from the main screen.
+    -   Change the font size for larger text.
     -   Enable or disable "Dim Light Mode".
     -   View the "Last Time Scanned".
     -   Access "Scan History" to see details of the last five scans.
