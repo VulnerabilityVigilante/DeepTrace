@@ -2,6 +2,11 @@
 
 DeepTrace Anti-Virus is an Android application robustly designed to scan your device for suspicious files and potential threats. It empowers users to identify and remove unwanted files, view scan history, and customize settings for a personalized and secure experience.
 
+## Contributors
+
+-   **Jianyu Huang** ([@jianeral](https://github.com/jianeral)) - UI/UX Design, Settings Management
+-   **Javier Rosales** ([@javii820](https://github.com/javii820)) - Testing, Documentation
+-   **Sergio Yazdi** ([@VulnerabilityVigilante](https://github.com/VulnerabilityVigilante)) - File Scanning Logic, Project and Development Lead
 ## Features
 
 -   **File Scanning:** Scans the device's storage for suspicious files based on a predefined virus database (loaded from `virus_db.csv` in assets) and basic heuristics (e.g., suspicious file extensions, patterns like `.pdf.exe`).
@@ -69,6 +74,13 @@ The project is meticulously organized into several key packages and components:
     -   View the "Last Time Scanned".
     -   Access "Scan History" to see details of the last five scans.
 6.  **View Scan History:** Access the scan history from settings or potentially another part of the app to see a list of past scan dates.
+
+## Known Issues
+
+-   Scanning very large directories may take a significant amount of time and could appear unresponsive.
+-   On some older Android versions (e.g., Android 6.0), the Dim Light Mode might not render perfectly in all dialogs.
+-   The app may occasionally report false positives for files that have unusual naming conventions similar to heuristic patterns.
+-   Background music might not resume correctly if a phone call is received during a scan.
 
 ## Future Scope / To-Do (Potential)
 
