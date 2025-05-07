@@ -497,8 +497,6 @@ public class MainActivity extends AppCompatActivity {
 
         // Demo file in tmp (app-specific external storage)
         if (tmpDir != null && tmpDir.exists()) {
-            demoFilesToCreate.put(tmpDir, "Setup_Worm.exe"); // Heuristic
-            demoFilesToCreate.put(tmpDir, "my_document.pdf.exe"); // Heuristic
             demoFilesToCreate.put(tmpDir, "csv_test_virus.bin"); // CSV
         }
 
